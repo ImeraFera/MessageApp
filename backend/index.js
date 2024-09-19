@@ -49,6 +49,8 @@ io.on('connect', (socket) => {
             }
         });
 
+
+
         socket.join(newRoomName);
         console.log(`Kullanıcı ${socket.id} ${newRoomName} odasına katıldı`);
     });
