@@ -1,0 +1,11 @@
+# Backend .env file
+/backend/.env
+
+# Frontend .env file
+/frontend/.env
+
+# Backend node_modules directory
+/backend/node_modules/
+
+# Frontend node_modules directory
+/frontend/node_modules/
