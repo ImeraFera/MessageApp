@@ -10,17 +10,19 @@ const server = createServer(app);
 
 const io = new Server(server, {
     cors: {
-        origin: "https://messageapp-react-frontend.onrender.com",
+        origin: "https://messageapp-react.onrender.com",
         methods: ["GET", "POST"],
         allowedHeaders: ["Content-Type"],
         credentials: true
     }
 });
 
+// CORS ayarlarını güncelleyin
 app.use(cors({
-    origin: process.env.CORS_ORIGIN || '*',
+    origin: "https://messageapp-react.onrender.com",
     methods: 'GET,POST,PUT,DELETE,OPTIONS',
-    allowedHeaders: 'Content-Type,Authorization'
+    allowedHeaders: 'Content-Type,Authorization',
+    credentials: true
 }));
 
 app.use(express.json());
