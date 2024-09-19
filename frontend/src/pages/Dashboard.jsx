@@ -35,10 +35,10 @@ function Dashboard() {
                 roomName,
                 message,
             };
-            await dispatch(saveMessage(messageData)).unwrap();
             socket.emit('send_message', { roomName, message });
-            await dispatch(getMessageList({ roomName })).unwrap();
             setMessage('');
+            await dispatch(saveMessage(messageData)).unwrap();
+            await dispatch(getMessageList({ roomName })).unwrap();
         }
     };
 
@@ -97,12 +97,29 @@ function Dashboard() {
                 </Box>
                 <Box mt={2}>
                     <Stack direction={'column'} display={'flex'} maxHeight={'68vh'} sx={{ overflowY: 'auto' }}>
-                        {friends?.map((friend) => (
-                            <CardActionArea key={friend._id} onClick={() => handleJoinRoom(friend)}>
-                                <FriendItem username={friend.username} avatar={friend.avatar} />
-                            </CardActionArea>
-                        ))}
+                        {friends?.map((friend) => {
+                            const isSelected = selectedFriend?._id === friend._id;
+
+                            return (
+                                <CardActionArea
+                                    key={friend._id}
+                                    onClick={() => {
+                                        if (!isSelected) {
+                                            handleJoinRoom(friend);
+                                        }
+                                    }}
+                                    sx={{
+                                        cursor: isSelected ? 'default' : 'pointer',
+                                        opacity: isSelected ? 0.5 : 1,
+                                        pointerEvents: isSelected ? 'none' : 'auto',
+                                    }}
+                                >
+                                    <FriendItem username={friend.username} avatar={friend.avatar} />
+                                </CardActionArea>
+                            );
+                        })}
                     </Stack>
+
                 </Box>
             </Grid2>
 
