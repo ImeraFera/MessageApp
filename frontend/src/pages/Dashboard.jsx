@@ -1,9 +1,10 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useRef, useState } from 'react';
 import { Avatar, Box, Button, CardActionArea, Grid2, Stack, TextField, Typography } from '@mui/material';
 import CurrentUserHeader from '../components/CurrentUserHeader';
 import FriendItem from '../components/FriendItem';
 import { useDispatch, useSelector } from 'react-redux';
-import { getMessageList, getUser, getUserFriends, joinRoom, saveMessage } from '../redux/slices/userSlice';
+import { addMessage, getMessageList, getUser, getUserFriends, joinRoom, saveMessage } from '../redux/slices/userSlice';
 import OtherUserHeader from '../components/OtherUserHeader';
 import io from 'socket.io-client';
 import MyMessage from '../components/MyMessage';
@@ -16,7 +17,7 @@ function Dashboard() {
     const dispatch = useDispatch();
     const [selectedFriend, setSelectedFriend] = useState(null);
     const [message, setMessage] = useState('');
-    const messagesEndRef = useRef(null); // Referans
+    const messagesEndRef = useRef(null);
 
     const id = useSelector(({ user }) => user.id);
     const messageList = useSelector(({ user }) => user.messages);
@@ -35,7 +36,7 @@ function Dashboard() {
                 roomName,
                 message,
             };
-            socket.emit('send_message', { roomName, message });
+            socket.emit('send_message', messageData);
             setMessage('');
             await dispatch(saveMessage(messageData)).unwrap();
             await dispatch(getMessageList({ roomName })).unwrap();
@@ -50,6 +51,11 @@ function Dashboard() {
     useEffect(() => {
         socket.on('connect', () => {
             console.log('Connected:', socket.id);
+        });
+
+        socket.on('receive_message', (data) => {
+            console.log(data)
+            dispatch(addMessage(data))
         });
 
         return () => {
@@ -67,18 +73,6 @@ function Dashboard() {
         }
     };
 
-    useEffect(() => {
-        socket.on('receive_message', () => {
-            if (selectedFriend) {
-                const roomName = generateRoomName(id, selectedFriend._id);
-                dispatch(getMessageList({ roomName }));
-            }
-        });
-
-        return () => {
-            socket.off('receive_message');
-        };
-    }, [selectedFriend, dispatch, id]);
 
     useEffect(() => {
         if (messagesEndRef.current) {

@@ -124,7 +124,9 @@ const userSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {
-
+        addMessage(state, action) {
+            state.messages.push(action.payload);
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -195,4 +197,5 @@ const userSlice = createSlice({
 
 });
 
+export const { addMessage } = userSlice.actions;
 export default userSlice.reducer;

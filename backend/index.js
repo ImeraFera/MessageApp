@@ -27,11 +27,17 @@ app.use(express.json());
 
 app.use('/api', userRoutes)
 
+let i = 0;
 io.on('connect', (socket) => {
+    i++;
+    console.log(i)
     console.log('Bir kullanıcı bağlandı:', socket.id);
 
     socket.on('disconnect', () => {
         console.log('Bir kullanıcı ayrıldı:', socket.id);
+        i--;
+        console.log(i)
+
     });
 
     socket.on('join_room', (newRoomName) => {
@@ -48,10 +54,11 @@ io.on('connect', (socket) => {
     });
 
     socket.on('send_message', (data) => {
-        const { roomName, message } = data;
+        const { roomName, message, senderId } = data;
+        console.log(data)
         console.log(`Oda: ${roomName}, Mesaj: ${message}`);
 
-        io.to(roomName).emit('receive_message', { message, senderId: socket.id });
+        io.to(roomName).emit('receive_message', { message, senderId });
     });
 
 });
