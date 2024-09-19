@@ -8,22 +8,22 @@ import { createServer } from 'node:http';
 const app = express();
 const server = createServer(app);
 
+app.use(cors({
+    origin: "https://messageapp-frontend-k57u.onrender.com",
+    methods: 'GET,POST,PUT,DELETE,OPTIONS',
+    allowedHeaders: 'Content-Type,Authorization',
+    credentials: true
+}));
+
 const io = new Server(server, {
     cors: {
-        origin: "https://messageapp-react.onrender.com",
+        origin: "https://messageapp-frontend-k57u.onrender.com",
         methods: ["GET", "POST"],
         allowedHeaders: ["Content-Type"],
         credentials: true
     }
 });
 
-// CORS ayarlarını güncelleyin
-app.use(cors({
-    origin: "https://messageapp-react.onrender.com",
-    methods: 'GET,POST,PUT,DELETE,OPTIONS',
-    allowedHeaders: 'Content-Type,Authorization',
-    credentials: true
-}));
 
 app.use(express.json());
 
