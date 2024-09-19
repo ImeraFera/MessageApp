@@ -10,7 +10,7 @@ const server = createServer(app);
 
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:5173",
+        origin: "https://messageapp-react-frontend.onrender.com",
         methods: ["GET", "POST"],
         allowedHeaders: ["Content-Type"],
         credentials: true
