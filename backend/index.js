@@ -9,7 +9,9 @@ const app = express();
 const server = createServer(app);
 
 app.use(cors({
-    origin: "https://messageapp-frontend-k57u.onrender.com",
+    // origin: "https://messageapp-frontend-k57u.onrender.com",
+    origin: "http://localhost:5173",
+
     methods: 'GET,POST,PUT,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type,Authorization',
     credentials: true
@@ -17,7 +19,9 @@ app.use(cors({
 
 const io = new Server(server, {
     cors: {
-        origin: "https://messageapp-frontend-k57u.onrender.com",
+        origin: "http://localhost:5173",
+        // origin: "https://messageapp-frontend-k57u.onrender.com",
+
         methods: ["GET", "POST"],
         allowedHeaders: ["Content-Type"],
         credentials: true

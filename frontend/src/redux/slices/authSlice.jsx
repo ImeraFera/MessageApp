@@ -1,6 +1,8 @@
 /* eslint-disable no-useless-catch */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { generateAvatar } from '../../utils/avatarGenerator';
+
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const initialState = {
@@ -38,8 +40,10 @@ export const loginUser = createAsyncThunk(
 export const createUser = createAsyncThunk(
     'auth/createUser',
     async ({ email, username, password }) => {
+        const userAvatar = generateAvatar(email);
+        console.log(userAvatar);
         try {
-            const response = await axios.post(apiUrl + '/register', { email, username, password });
+            const response = await axios.post(apiUrl + '/register', { email, username, password, avatar: userAvatar.svg });
             return response.data;
         } catch (error) {
             const errorMessage = error.response.data.message;

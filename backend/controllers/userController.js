@@ -1,6 +1,8 @@
 import User from '../models/User.js';
 import Message from '../models/Message.js';
 import Room from '../models/Room.js';
+import Friend from '../models/Friend.js';
+
 
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
@@ -36,7 +38,6 @@ export const getMessageList = async (req, res) => {
         res.status(500).json({ message: 'Server error while fetching messages.' });
     }
 };
-
 
 export const saveMessage = async (req, res) => {
     const { senderId, roomName, message } = req.body.message;
@@ -95,6 +96,39 @@ export const joinRoom = async (req, res) => {
     }
 };
 
+export const addFriend = async (req, res) => {
+    const friendEmail = req.body.email;
+
+    try {
+        const friend = await User.findOne({ email: friendEmail });
+
+        if (!friend) {
+            return res.status(404).send({ message: 'Kişi bulunamadı.' });
+        }
+
+        const friendShip = await Friend.findOne({
+            requester: req.user.id,
+            receiver: friend._id
+        });
+
+        if (friendShip) {
+            return res.status(400).send({ message: 'Bu kişiyle zaten arkadaşsınız.' });
+        }
+
+        const newFriendShip = new Friend({
+            requester: req.user.id,
+            receiver: friend._id,
+        });
+
+        await newFriendShip.save();
+
+        return res.status(201).send({ message: 'Arkadaşlık isteği gönderildi.' });
+
+    } catch (error) {
+        return res.status(500).send({ message: 'Bir hata oluştu.', error: error.message });
+    }
+};
+
 export const getUserFriends = async (req, res) => {
     const userId = req.user.id;
 
@@ -108,7 +142,6 @@ export const getUserFriends = async (req, res) => {
         res.status(500).json({ message: 'Kullanıcılar alınırken bir hata oluştu' });
     }
 };
-
 
 export const getUser = async (req, res) => {
     try {
@@ -126,8 +159,7 @@ export const getUser = async (req, res) => {
 }
 
 export const register = async (req, res) => {
-    const { username, email, password } = req.body;
-
+    const { username, email, password, avatar } = req.body;
     try {
         const existingUser = await User.findOne({ email });
         if (existingUser) {
@@ -141,6 +173,7 @@ export const register = async (req, res) => {
             username,
             email,
             password: hashedPassword,
+            avatar,
         });
 
         await newUser.save();

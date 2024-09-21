@@ -95,7 +95,7 @@ function Register() {
                             <Button type='submit' variant='contained'>
                                 {(loading ? (
                                     <CircularProgress size={24} color='white' />
-                                ) : 'Login')}
+                                ) : 'Register')}
                             </Button>                        </Box>
                     </Box>
                 </form>

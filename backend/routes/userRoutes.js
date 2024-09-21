@@ -1,5 +1,5 @@
 import express from 'express';
-import { register, login, getUser, getUserFriends, joinRoom, saveMessage, getMessageList } from '../controllers/userController.js';  // getMessageList'i de import et
+import { register, login, getUser, getUserFriends, joinRoom, saveMessage, getMessageList, addFriend } from '../controllers/userController.js';  // getMessageList'i de import et
 import { jwtCheck } from '../middlewares/jwtCheck.js';
 
 const router = express.Router();
@@ -15,5 +15,7 @@ router.post('/join-room', jwtCheck, joinRoom);
 router.get('/get-message-list', jwtCheck, getMessageList);
 
 router.post('/save-message', jwtCheck, saveMessage);
+router.post('/add-friend', jwtCheck, addFriend);
+
 
 export default router;

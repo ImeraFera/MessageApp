@@ -10,7 +10,7 @@ import io from 'socket.io-client';
 import MyMessage from '../components/MyMessage';
 import FriendMessage from '../components/FriendMessage';
 import { generateRoomName } from '../utils/roomNameGenerator';
-
+import AddFriendButton from '../components/AddFriendButton';
 const socket = io(import.meta.env.VITE_SOCKET_URL);
 
 function Dashboard() {
@@ -21,7 +21,9 @@ function Dashboard() {
 
     const id = useSelector(({ user }) => user.id);
     const messageList = useSelector(({ user }) => user.messages);
+    const avatar = useSelector(({ user }) => user.avatar);
     const username = useSelector(({ user }) => user.username);
+
     const friends = useSelector(({ user }) => user.friends);
 
     const handleChange = (event) => {
@@ -83,12 +85,8 @@ function Dashboard() {
     return (
         <Grid2 container justifyContent={'center'} spacing={1} my={5} minHeight={'70vh'}>
             <Grid2 size={4} bgcolor={'white'} borderRadius={'1em'}>
-                <CurrentUserHeader username={username} avatar={''} />
-                <Box display={'flex'} mt={1} mx={2}>
-                    <Button fullWidth variant='contained' color='warning'>
-                        Add Friend
-                    </Button>
-                </Box>
+                <CurrentUserHeader username={username} avatar={avatar} />
+                <AddFriendButton></AddFriendButton>
                 <Box mt={2}>
                     <Stack direction={'column'} display={'flex'} maxHeight={'68vh'} sx={{ overflowY: 'auto' }}>
                         {friends?.map((friend) => {

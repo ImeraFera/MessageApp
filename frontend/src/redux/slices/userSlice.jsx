@@ -13,6 +13,7 @@ const initialState = {
     friends: null,
     messages: null,
     currentRoom: null,
+    avatar: null,
 
 };
 
@@ -28,7 +29,6 @@ export const saveMessage = createAsyncThunk(
                     'Authorization': `Bearer ${token}`
                 }
             })
-            console.log(response)
 
         } catch (error) {
             console.log(error);
@@ -79,7 +79,6 @@ export const joinRoom = createAsyncThunk(
     }
 );
 
-
 export const getUser = createAsyncThunk(
     'user/getUser',
     async () => {
@@ -96,6 +95,33 @@ export const getUser = createAsyncThunk(
 
         } catch (error) {
             console.log(error);
+        }
+    }
+)
+
+export const addFriend = createAsyncThunk(
+    'user/addFriend',
+    async (email, { rejectWithValue }) => {
+        const token = sessionStorage.getItem('userToken');
+
+        try {
+
+            const response = await axios.post(apiUrl + '/add-friend', {
+                email,
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+
+            if (response.status < 200 || response.status >= 300) {
+                return rejectWithValue(response.data);
+            }
+
+            return response;
+        } catch (error) {
+            // console.log(error);
+            return rejectWithValue(error.response ? error.response.data : 'Bir hata oluştu');
         }
     }
 )
@@ -139,6 +165,8 @@ const userSlice = createSlice({
                 state.id = payload._id;
                 state.email = payload.email;
                 state.username = payload.username;
+                state.avatar = payload.avatar;
+
 
             })
             .addCase(getUser.rejected, (state, { payload }) => {
@@ -192,6 +220,18 @@ const userSlice = createSlice({
             .addCase(getMessageList.rejected, (state, { payload }) => {
                 state.loading = false;
                 // state.error = null;
+            })
+            .addCase(addFriend.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(addFriend.fulfilled, (state, { payload }) => {
+                state.loading = false;
+
+            })
+            .addCase(addFriend.rejected, (state, { payload }) => {
+                state.loading = false;
+                state.error = payload.message;
             })
     }
 
